@@ -1,4 +1,4 @@
-<?php
+    <?php
     //Antonio Manilla Maldonado
     $HOST = 'localhost';
     $PORT = 3307;

@@ -7,6 +7,10 @@ $host = $_SERVER['HTTP_HOST'];
 $ruta = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 $url = "http://$host$ruta"; 
 
+if (!isset($_SESSION["user_id"])) {
+    die("ACCESS DENIED");
+}
+
 if (isset($_POST["cancel"])) {
     header("Location: $url/index.php");
     die();
