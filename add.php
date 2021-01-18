@@ -1,59 +1,39 @@
 <?php
 //Database Connection
 require_once "pdo.php";
+require_once "head.php";
+require_once "util.php";
 session_start();
-
-//Validates the year
-function validatePos()
-{
-    for ($i=1; $i<=9; $i++) {
-        if (! isset($_POST['year'.$i]) ) { 
-            continue;
-        }
-        if (! isset($_POST['desc'.$i]) ) { 
-            continue;
-        }
-
-        $year = $_POST['year'.$i];
-        $desc = $_POST['desc'.$i];
-
-        if (strlen($year) == 0 || strlen($desc) == 0 ) {
-            return "All fields are required";
-        }
-
-        if (! is_numeric($year) ) {
-            return "Position year must be numeric";
-        }
-    }
-    return true;
-}//End of ValidatePos
 
 $host = $_SERVER['HTTP_HOST'];
 $ruta = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-$url = "http://$host$ruta";
+$url = "http://$host$ruta"; 
 
-//If there's no current session active, the access is denied
 if (!isset($_SESSION["user_id"])) {
     die("ACCESS DENIED");
 }
 
-//If the action is canceled, return to de index.php page
 if (isset($_POST["cancel"])) {
     header("Location: $url/index.php");
     die();
 }
 
 if (isset($_POST["add"])) {
-    //if validatePos returns true, then the process can continue
-    //otherwise it will die.  
     $position_validate = validatePos();
+    $education_validate = validateEdu();
+
     if ($position_validate !== true) {
         $_SESSION["error"] = $position_validate;
         header("Location: $url/add.php");
         die();
     }
 
-    //All the fields need to be fulfilled otherwise it will throw an error. 
+    if ($education_validate !== true) {
+        $_SESSION["error"] = $education_validate;
+        header("Location: $url/add.php");
+        die();
+    }
+
     if (strlen($_POST["first_name"]) < 1
         || strlen($_POST["last_name"]) < 1
         || strlen($_POST["email"]) < 1
@@ -65,8 +45,6 @@ if (isset($_POST["add"])) {
         die();
     }
 
-    //Email validation, if it not caontains the character @, it will take it
-    //as an error. 
     if (strpos($_POST["email"], "@") === false) {
         $_SESSION["error"] = "Email address must contain @";
         header("Location: $url/add.php");
@@ -78,8 +56,6 @@ if (isset($_POST["add"])) {
         VALUES ( :uid, :fn, :ln, :em, :he, :su)'
     );
 
-    //If everything is succesfull, it will add the corresponding value to the 
-    //table in the database. 
     $stmt->execute(
         array(
         ':uid' => $_SESSION['user_id'],
@@ -115,21 +91,62 @@ if (isset($_POST["add"])) {
         );
         $rank++;
     }
+
+    $rank = 1;
+    for ($i = 1; $i <= 9; $i++) {
+        if (! isset($_POST['edu_year'.$i]) ) {
+            continue;
+        }
+        if (! isset($_POST['edu_school'.$i]) ) {
+            continue;
+        }
+        $year = $_POST["edu_year" . $i];
+        $stmt = $pdo->prepare(
+            "SELECT institution_id
+            FROM institution
+            WHERE name = :edu_school"
+        );
+        $stmt->execute(array(':edu_school' => $_POST["edu_school" . $i]));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row !== false) {
+            $instid = $row["institution_id"];
+        } else {
+            $stmt = $pdo->prepare(
+                "INSERT INTO institution
+                (name)
+                VALUES (:school_name)"
+            );
+            $stmt->execute(array(':school_name' => $_POST["edu_school" . $i]));
+            $instid = $pdo->lastInsertId();
+        }
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO education
+            (profile_id, institution_id, rank, year)
+            VALUES (:pid, :instid, :rank, :year)'
+        );
+        $stmt->execute(
+            array(
+            ':pid' => $profile_id,
+            ':rank' => $rank,
+            ':year' => $year,
+            ':instid' => $instid)
+        );
+        $rank++;
+    }
     
     $_SESSION["success"] = "Profile added";
     header("Location: $url/index.php");
     die();
-}//End of "add"
-
+}
 //End of php
 ?>
 
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
     <title>Antonio Manilla Maldonado</title>
 </head>
 <body">
@@ -160,12 +177,15 @@ if (isset($_POST["add"])) {
             name="summary"
             cols="100"
             rows="20"
-            style="resize: none;"
-        >
+            style="resize: none;">
         </textarea>
         <br>
+        <label>Education:</label>
+        <input type="button" value="+" id="plus_education" class="plus_button">
+        <br>
+        <div id="edu_fields"></div>
         <label>Position:</label>
-        <input type="button" value="+" id="plus_button">
+        <input type="button" value="+" id="plus_position" class="plus_button">
         <br>
         <div id="position_fields"></div>
         <input type="submit" name="add" value="Add">
@@ -174,4 +194,3 @@ if (isset($_POST["add"])) {
     <script type="text/javascript" src="js/position.js"></script>
 </body>
 </html>
-

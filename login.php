@@ -1,29 +1,28 @@
 <?php
-    //Database connection
+    //Database Connection
     require_once "pdo.php";
+    require_once "head.php";
     session_start();
 
     $host = $_SERVER['HTTP_HOST'];
     $ruta = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $url = "http://$host$ruta"; 
+    $url = "http://$host$ruta";
 
 if (isset($_POST["cancel"])) {
     header("Location: $url/index.php");
     die();
 }
 
-//Validates the Login with a salt method.
 if (isset($_POST["email"]) && isset($_POST["pass"])) {
     unset($SESSION["name"]);
     unset($SESSION["user_id"]);
         
     $salt = 'XyZzy12*_';
+    // md5 is generated when $salt and "pass" are concatenated
     $check = hash("md5", $salt . $_POST["pass"]);
 
     $stmt = $pdo->prepare(
-        'SELECT
-        user_id,
-        name
+        'SELECT user_id, name
         FROM users
         WHERE
         email = :em AND
@@ -45,22 +44,20 @@ if (isset($_POST["email"]) && isset($_POST["pass"])) {
         die();
     }
 }
-//End of php 
+//End of php
 ?>
 
-
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Antonio Manilla Maldonado</title>
 </head>
-<body style="font-family: Helvetica">
+<body>
     <h1>
         Please Log In
     </h1>
-    
     <?php
-    //php --------------------------------------------------------------------------
     if (isset($_SESSION["error"])) {
         echo('<p style="color: red;">'. $_SESSION["error"]);
         unset($_SESSION["error"]);
@@ -77,31 +74,40 @@ if (isset($_POST["email"]) && isset($_POST["pass"])) {
         <input type="submit" name="cancel" value="Cancel">
     </form>
 
+
+    <!-- ............................................................... -->
+    <!-- <p> If you don't know which password to use, check the code comments
+        Email is 'umsi@umich.edu' and the password is 'php123'  </p> -->
+    <!-- ............................................................... -->
+
+
     <script>
         function doValidate()
         {
             console.log("Validating...");
-            try {
+            try
+            {
                 email = document.getElementById("id_email").value;
                 pw = document.getElementById("id_1723").value;
-                console.log("Validating email:", email);
-                console.log("Validating pw:", pw);
-                if (pw == null || pw == "" || email == null || email == "") {
+                console.log("Validating email="+email);
+                console.log("Validating pw="+pw);
+                if (pw == null || pw == "" || email == null || email == "")
+                {
                     alert("Both fields must be filled out");
                     return false;
                 }
-                if(email.search("@") === -1) {
+                if(email.search("@") === -1)
+                {
                     alert("Email address must contain @");
                     return false;
                 }
                 return true;
             }
-            catch(e) {
+            catch(e)
+            {
                 return false;
             }
             return false;
-
-            //End of php ----------------------------------------------------------------------------
         }
     </script>
 </body>

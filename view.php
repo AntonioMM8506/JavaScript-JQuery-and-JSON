@@ -1,18 +1,15 @@
 <?php
-//Database connection
+//Database Connection
 require_once "pdo.php";
+require_once "head.php";
 session_start();
 
-//If there's no profile id, an error is shown and the user is
-//send back to the index.php
 if (! isset($_GET['profile_id']) ) {
     $_SESSION['error'] = "Missing profile_id";
     header("Location: $url/index.php");
     die();
 }
 
-//Select the data from Profile table and display it according
-//to the selected id.
 $sql = "SELECT * FROM profile WHERE profile_id = :profile_id";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":profile_id" => $_GET['profile_id']));
@@ -33,18 +30,18 @@ $su = htmlentities($row["summary"]);
 $sql = "SELECT * FROM position WHERE profile_id = :profile_id";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":profile_id" => $_GET['profile_id']));
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-//End of php
+$sql = "SELECT * FROM education WHERE profile_id = :profile_id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(array(":profile_id" => $_GET['profile_id']));
+$education_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
     <title>Antonio Manilla Maldonado</title>
 </head>
 <body>
@@ -63,10 +60,26 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php echo $su ?>
     </p>
     <?php
-    if ($rows !== false) {
+    if ($education_rows !== false) {
+        echo '<p>Education' . "\n" . '<ul>' . "\n";
+    }
+    foreach ($education_rows as $row) {
+        $stmt = $pdo->prepare(
+            "SELECT name
+            FROM institution
+            WHERE institution_id = :instid"
+        );
+        $stmt->execute(array(":instid" => $row['institution_id']));
+        echo 
+            '<li>' . $row["year"] . ': ' .
+            $stmt->fetch(PDO::FETCH_ASSOC)["name"] . '</li>' . "\n";
+    }
+            echo '</ul>'. "\n" . '</p>';
+
+    if ($position_rows !== false) {
         echo '<p>Position' . "\n" . '<ul>' . "\n";
     }
-    foreach ($rows as $row) {
+    foreach ($position_rows as $row) {
         echo '<li>' . $row["year"] . ': ' . $row["description"] . '</li>' . "\n";
     }
             echo '</ul>'. "\n" . '</p>';

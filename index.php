@@ -1,12 +1,11 @@
 <?php
 //Database connection
 require_once "pdo.php";
+require_once "head.php"
 session_start();
+
 $stmt = $pdo->query(
-    "SELECT
-    profile_id, first_name, last_name, headline
-    FROM
-    profile"
+    "SELECT profile_id, first_name, last_name, headline FROM profile"
 );
 
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -14,7 +13,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 //End of php ------------------------------------------------
 ?>
 
-
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!DOCTYPE html>
 <html>
 
@@ -59,20 +58,13 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             echo "</tr>\n";
             foreach ($rows as $row) {
                 echo "<tr><td>";
-                echo
-                    "<a href='view.php?profile_id=" . $row["profile_id"] .
-                    "'>" . htmlentities($row['first_name'] . " " . $row['last_name']) .
-                    "</a>";
+                echo "<a href='view.php?profile_id=" . $row["profile_id"] . "'>" . htmlentities($row['first_name'] . " " . $row['last_name']) . "</a>";
                 echo("</td><td>");
                 echo(htmlentities($row['headline']));
                 echo("</td>");
                 if (isset($_SESSION["user_id"])) {
-                    echo
-                        '<td><a href="edit.php?profile_id=' .
-                        $row['profile_id'] . '">Edit</a> ';
-                    echo
-                        '<a href="delete.php?profile_id=' .
-                        $row['profile_id'] . '">Delete</a></td>';
+                    echo '<td><a href="edit.php?profile_id=' . $row['profile_id'] . '">Edit</a> ';
+                    echo '<a href="delete.php?profile_id=' . $row['profile_id'] . '">Delete</a></td>';
                 }
                 echo("</tr>\n");
             }

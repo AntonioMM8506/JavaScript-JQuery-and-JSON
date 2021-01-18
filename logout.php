@@ -1,5 +1,4 @@
 <?php
-//Antonio Manilla Maldonado
 
 session_start();
 unset($_SESSION['name']);
