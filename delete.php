@@ -5,8 +5,8 @@ require_once "head.php";
 session_start();
 
 $host = $_SERVER['HTTP_HOST'];
-$ruta = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-$url = "http://$host$ruta";
+$route = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+$url = "http://$host$route";
 
 if (!isset($_SESSION["user_id"])) {
     die("ACCESS DENIED");

@@ -7,6 +7,7 @@ if (!isset($_SESSION["user_id"])) {
     die("ACCESS DENIED");
 }
 
+//Queries
 header('Content-Type: application/json; charset=utf-8');
 $stmt = $pdo->prepare('SELECT name FROM Institution WHERE name LIKE :prefix');
 $stmt->execute(array( ':prefix' => $_REQUEST['term'] . "%"));

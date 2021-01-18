@@ -4,13 +4,10 @@ require_once "head.php";
 require_once "pdo.php";
 session_start();
 
-$stmt = $pdo->query(
-    "SELECT profile_id, first_name, last_name, headline FROM profile"
-);
-
+$stmt = $pdo->query( "SELECT profile_id, first_name, last_name, headline FROM profile" );
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-//End of php ------------------------------------------------
+//End of php 
 ?>
 
 <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -74,7 +71,8 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (isset($_SESSION["user_id"])) {
             echo '<p><a href="add.php">Add New Entry</a></p>';
         }
-        //End of php ---------------------------------------------------
+        //End of php 
         ?>
+
     </body>
 </html>

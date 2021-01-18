@@ -26,33 +26,35 @@ $(document).ready(function()
                 alert("Maximum of nine education entries exceeded");
         }
         $('.school').autocomplete({ source: "school.php" });
-    });
+    
+    });//End of plus_button
 
     function fix_position()
     {
         var div_tags = $("#position_fields").children("div");
         for(i = 0; i < div_tags.length; i++)
         {
-            $(div_tags[i]).attr('id', 'position' + (i + 1)); //Modifica el id del div de cada position
-            $(div_tags[i]).find("textarea").attr('name', 'desc' + (i + 1)); //Modifica el name del textarea
-            input_tags = $(div_tags[i]).find("input"); // Para obtener las tags input del div position
-            $(input_tags[0]).attr('name', 'year' + (i + 1)); //Modificar el atributo year del input Year
-            $(input_tags[1]).attr('onclick', '$(\'#position' + (i + 1) + '\').remove(); fix_position(); return false;'); //Modificar el atributo onclick del input Button
+            //Modifies the if of each div, the name of textarea and the attributes of the input and the button. 
+            $(div_tags[i]).attr('id', 'position' + (i + 1)); 
+            $(div_tags[i]).find("textarea").attr('name', 'desc' + (i + 1)); 
+            input_tags = $(div_tags[i]).find("input"); 
+            $(input_tags[0]).attr('name', 'year' + (i + 1)); 
+            $(input_tags[1]).attr('onclick', '$(\'#position' + (i + 1) + '\').remove(); fix_position(); return false;'); 
         }
-    }
+    }//End of fix_position
 
     function fix_education()
     {
         var div_tags = $("#edu_fields").children("div");
         for(i = 0; i < div_tags.length; i++)
         {
-            $(div_tags[i]).attr('id', 'edu' + (i + 1)); //Modifica el id del div de cada position
-            $(div_tags[i]).find(".school").attr('name', 'edu_school' + (i + 1)); //Modifica el name del input del school
-            input_tags = $(div_tags[i]).find("input"); // Para obtener las tags input del div position
-            $(input_tags[0]).attr('name', 'edu_year' + (i + 1)); //Modificar el atributo year del input Year
-            $(input_tags[1]).attr('onclick', '$(\'#edu' + (i + 1) + '\').remove(); fix_education(); return false;'); //Modificar el atributo onclick del input Button
+            $(div_tags[i]).attr('id', 'edu' + (i + 1)); 
+            $(div_tags[i]).find(".school").attr('name', 'edu_school' + (i + 1)); 
+            input_tags = $(div_tags[i]).find("input"); 
+            $(input_tags[0]).attr('name', 'edu_year' + (i + 1)); 
+            $(input_tags[1]).attr('onclick', '$(\'#edu' + (i + 1) + '\').remove(); fix_education(); return false;'); 
         }
-    }
+    }//End of fix_education
 
     $('.school').autocomplete({ source: "school.php" });
 

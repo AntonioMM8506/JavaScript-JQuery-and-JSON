@@ -1,3 +1,5 @@
+download ngrok and place the .exe outside the folder 
+
 in powershell terminal
 
 ./ngrok http 80

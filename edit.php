@@ -6,12 +6,10 @@ require_once "util.php";
 session_start();
 
 $host = $_SERVER['HTTP_HOST'];
-$ruta = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-$url = "http://$host$ruta";
+$route = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+$url = "http://$host$route";
 
-if (!isset($_SESSION["user_id"])) {
-    die("ACCESS DENIED");
-}
+if (!isset($_SESSION["user_id"])) { die("ACCESS DENIED"); }
 
 if (isset($_POST["cancel"])) {
     header("Location: $url/index.php");
@@ -228,7 +226,10 @@ $education_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <label>Education:</label>
         <input type="button" value="+" id="plus_education" class="plus_button">
         <br>
+
+
         <?php
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if ($education_rows !== false) {
             echo '<div id="edu_fields">' . "\n";
         }
@@ -243,45 +244,43 @@ $education_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $rank = $row["rank"];
 
             echo '<div id="edu' . $rank . '">' . "\n";
-            echo 
-                '<p>Year: <input type="text" name="edu_year' .
-                $rank .'" value="' . $row["year"] . '">' . "\n";
-            echo 
-                '<input type="button" value="-" onclick="$(\'#edu' .
-                $rank . '\').remove(); fix_education(); return false;">' .
-                "\n" . '</p>';
-            echo 
-                '<p>School: <input type="text" size="80" value="' .
-                $institution["name"] . '" name="edu_school' .
-                $rank . '" class="school" autocomplete="off"/></p>' . "\n";
+            echo '<p>Year: <input type="text" name="edu_year' . $rank .'" value="' . $row["year"] . '">' . "\n";
+            echo '<input type="button" value="-" onclick="$(\'#edu' . $rank . '\').remove(); fix_education(); return false;">' . "\n" . '</p>';
+            echo '<p>School: <input type="text" size="80" value="' . $institution["name"] . '" name="edu_school' . $rank . '" class="school" autocomplete="off"/></p>' . "\n";
             echo '</div>' . "\n";
         }  
             echo '</div>';
+
+            //End of php
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         ?>
+
+
         <label>Position:</label>
         <input type="button" value="+" id="plus_button">
         <br>
+        
+
         <?php
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if ($position_rows !== false) {
             echo '<div id="position_fields">' . "\n";
         }
         foreach ($position_rows as $row) {
             $rank = $row["rank"];
             echo '<div id="position' . $rank . '">' . "\n";
-            echo 
-                '<p>Year: <input type="text" name="year' .
-                $rank .'" value="' . $row["year"] . '">' . "\n";
-            echo 
-                '<input type="button" value="-" onclick="$(\'#position' .
-                $rank . '\').remove(); fix_position(); return false;">' .
-                "\n" . '</p>';
-            echo 
-                '<textarea name="desc' . $rank . '" rows="8" cols="80">' .
-                $row["description"] . '</textarea>' . "\n";
+            echo '<p>Year: <input type="text" name="year' . $rank .'" value="' . $row["year"] . '">' . "\n";
+            echo '<input type="button" value="-" onclick="$(\'#position' . $rank . '\').remove(); fix_position(); return false;">' . "\n" . '</p>';
+            echo '<textarea name="desc' . $rank . '" rows="8" cols="80">' . $row["description"] . '</textarea>' . "\n";
             echo '</div>' . "\n";
         }  
             echo '</div>';
+
+            //End of php
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         ?>
+
+
         <input type="hidden" name="profile_id" value="<?php echo $profile_id ?>">
         <input type="submit" name="save" value="Save">
         <input type="submit" name="cancel" value="Cancel">

@@ -27,6 +27,7 @@ $em = htmlentities($row["email"]);
 $he = htmlentities($row["headline"]);
 $su = htmlentities($row["summary"]);
 
+//Queries
 $sql = "SELECT * FROM position WHERE profile_id = :profile_id";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":profile_id" => $_GET['profile_id']));
@@ -36,6 +37,8 @@ $sql = "SELECT * FROM education WHERE profile_id = :profile_id";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":profile_id" => $_GET['profile_id']));
 $education_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//End of php
 ?>
 
 <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
