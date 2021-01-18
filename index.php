@@ -1,7 +1,7 @@
 <?php
 //Database connection
+require_once "head.php";
 require_once "pdo.php";
-require_once "head.php"
 session_start();
 
 $stmt = $pdo->query(
